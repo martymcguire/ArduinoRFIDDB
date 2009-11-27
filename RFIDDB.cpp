@@ -12,10 +12,17 @@ RFIDDB::RFIDDB()
 {
   _tagSize = 10;
   _numTags = EEPROM.read(0);
-  _dataSize = _tagSize * sizeof(char) * _numTags;
-  _tagData = (char*) malloc(_dataSize);
-  for(int i = 1; i < _dataSize + 1; i++){
-    _tagData[i - 1] = (char) EEPROM.read(i);
+  if((_numTags == 0) || (_numTags > 51)){
+    Serial.print("Bogus number of tags reported: ");
+    Serial.println(_numTags);
+    _numTags = 0;
+  }
+  if(_numTags > 0){
+    _dataSize = _tagSize * sizeof(char) * _numTags;
+    _tagData = (char*) malloc(_dataSize);
+    for(int i = 1; i < _dataSize + 1; i++){
+      _tagData[i - 1] = (char) EEPROM.read(i);
+    }
   }
 }
 
@@ -62,6 +69,7 @@ void RFIDDB::readTags()
         _dataSize = _tagSize * sizeof(char) * _numTags;
         _tagData = (char*) malloc(_dataSize);
         EEPROM.write(0, _numTags);
+        if(_numTags == 0) { done = 1; } // no tags to write
       } else {
         // otherwise, put this byte wherever it goes
         _tagData[currTag * _tagSize + idx] = inByte; // RAM
