@@ -64,8 +64,8 @@ void RFIDDB::readTags()
         EEPROM.write(0, _numTags);
       } else {
         // otherwise, put this byte wherever it goes
-        _tagData[currTag * _tagSize + idx] = inByte;
-        EEPROM.write(currTag * _tagSize + idx + 1, inByte);
+        _tagData[currTag * _tagSize + idx] = inByte; // RAM
+        EEPROM.write(currTag * _tagSize + idx + 1, inByte); // EEPROM
         // then, increment counters and/or set that we're done
         idx++;
         if(idx >= _tagSize){
@@ -81,4 +81,18 @@ void RFIDDB::readTags()
     }
   }
   Serial.println("Finished!");
+}
+
+bool RFIDDB::validTag(char* tag){
+  bool ok = true;
+  for(int i = 0; i < _numTags; i++){
+    ok = true;
+    for(int j = 0; j < _tagSize; j++){
+      if(tag[j] != _tagData[(i * _tagSize) + j]){
+        ok = false;
+      }
+    }
+    if(ok) { return true; }
+  }
+  return false;
 }

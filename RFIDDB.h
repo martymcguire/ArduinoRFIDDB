@@ -13,6 +13,7 @@ class RFIDDB
   public:
     RFIDDB();
     int numTags();
+    bool validTag(char* tag);
     void printTags();
     void readTags();
   private:
@@ -23,5 +24,3 @@ class RFIDDB
 };
 
 #endif
-
-
