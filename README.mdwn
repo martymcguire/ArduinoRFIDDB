@@ -1,0 +1,20 @@
+Arduino RFIDDB
+==============
+
+This is a library for storing, matching against, and updating a list of RFID tags, stored in the EEPROM of an Arduino.
+
+The library assumes many things:
+
+* Your RFID tags are 10 character strings (e.g., Parallax RFID tags)
+* Your EEPROM has enough memory to store all of the tags (an ATMEGA328 has 512 bytes of EEPROM storage, can store 51 tags).
+* You like updating your database over Serial
+
+Installation
+------------
+
+Place all of this great stuff in an RFIDDB folder in your Arduino software's `hardware/libraries/` directory.
+
+Using the Library
+-----------------
+
+See the RFIDDBTest example to see how this library is used.
