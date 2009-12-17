@@ -8,19 +8,22 @@
 
 #include "WProgram.h"
 
+#define TAG_LENGTH  10      // Length of a tag, in bytes
+#define MAX_TAGS    50      // Maximum number of tags we can hold
+
 class RFIDDB
 {
   public:
     RFIDDB();
-    int numTags();
+    int getNumTags();
     bool validTag(char* tag);
     void printTags();
     void readTags();
   private:
-    int   _tagSize;
-    int   _numTags;
-    int   _dataSize;
-    char* _tagData;
+    int   tagSize;
+    int   numTags;
+    int   dataSize;
+    char tagData[MAX_TAGS][TAG_LENGTH];
 };
 
 #endif
