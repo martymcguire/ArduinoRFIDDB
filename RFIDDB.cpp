@@ -14,7 +14,7 @@ RFIDDB::RFIDDB()
   _numTags = EEPROM.read(0);
   if((_numTags == 0) || (_numTags > 51)){
     Serial.print("Bogus number of tags reported: ");
-    Serial.println(_numTags);
+    Serial.println(_numTags, DEC);
     _numTags = 0;
   }
   if(_numTags > 0){
@@ -63,9 +63,9 @@ void RFIDDB::readTags()
       // get the total number of records, if we don't already have it
       if(_numTags == -1){
         _numTags = (int) inByte;
-        Serial.print("Expecting '");
+        Serial.print("Expecting ");
         Serial.print(_numTags, DEC);
-        Serial.println("' tags.");
+        Serial.println(" tags.");
         _dataSize = _tagSize * sizeof(char) * _numTags;
         _tagData = (char*) malloc(_dataSize);
         EEPROM.write(0, _numTags);
