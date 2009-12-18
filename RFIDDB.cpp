@@ -11,16 +11,15 @@
 RFIDDB::RFIDDB()
 {
   numTags = EEPROM.read(0);
-  if((numTags == 0) || (numTags > 51)){
+  if((numTags == 0) || (numTags > MAX_TAGS)){
     Serial.print("Bogus number of tags reported: ");
     Serial.println(numTags, DEC);
     numTags = 0;
   }
   if(numTags > 0){
     dataSize = TAG_LENGTH * sizeof(char) * numTags;
-    for(int i = 1; i < dataSize + 1; i++){
-      // TODO: fix this hack
-      *(&(tagData[0][0]) + i - 1) = (char) EEPROM.read(i);
+    for(int i = 0; i < dataSize; i++){
+      tagData[i/TAG_LENGTH][i%TAG_LENGTH] = (char) EEPROM.read(i+1);
     }
   }
 }
