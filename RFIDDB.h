@@ -11,6 +11,8 @@
 // TODO: Include this directly
 //#include <EEPROM.h>
 
+#define DONT_BUFFER_TAG_IDS
+
 #define TAG_LENGTH  10      // Length of a tag, in bytes
 #define MAX_TAGS    50      // Maximum number of tags we can hold
 
@@ -25,8 +27,10 @@ class RFIDDB
   private:
     int   tagSize;
     int   numTags;
+#ifndef DONT_BUFFER_TAG_IDS
     int   dataSize;
     char tagData[MAX_TAGS][TAG_LENGTH];
+#endif
 };
 
 #endif
