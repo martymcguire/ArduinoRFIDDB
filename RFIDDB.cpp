@@ -16,14 +16,6 @@ RFIDDB::RFIDDB()
     Serial.println(numTags, DEC);
     numTags = 0;
   }
-#ifndef DONT_BUFFER_TAG_IDS
-  if(numTags > 0){
-    dataSize = TAG_LENGTH * sizeof(char) * numTags;
-    for(int i = 0; i < dataSize; i++){
-      tagData[i/TAG_LENGTH][i%TAG_LENGTH] = (char) EEPROM.read(i+1);
-    }
-  }
-#endif
 }
 
 int RFIDDB::getNumTags()
@@ -41,13 +33,9 @@ void RFIDDB::printTags()
     Serial.print(i + 1);
     Serial.print(": ");
     for(int j = 0; j < TAG_LENGTH; j++){
-#ifdef DONT_BUFFER_TAG_IDS
       char buffer;
       buffer = (char) EEPROM.read(i*TAG_LENGTH+j+1);
       Serial.print(buffer, BYTE);
-#else
-      Serial.print(tagData[i][j], BYTE);
-#endif
     }
     Serial.println();
   }
@@ -55,11 +43,9 @@ void RFIDDB::printTags()
 
 void RFIDDB::readTags()
 {
-#ifndef DONT_BUFFER_TAG_IDS
   char inByte;
   int done = 0;
   numTags = -1;
-  dataSize = 0;
   int currTag = 0;
   int idx = 0;
   while(!done){
@@ -71,12 +57,10 @@ void RFIDDB::readTags()
         Serial.print("Expecting ");
         Serial.print(numTags, DEC);
         Serial.println(" tags.");
-        dataSize = TAG_LENGTH * sizeof(char) * numTags;
         EEPROM.write(0, numTags);
         if(numTags == 0) { done = 1; } // no tags to write
       } else {
         // otherwise, put this byte wherever it goes
-        tagData[currTag][idx] = inByte; // RAM
         EEPROM.write(currTag * TAG_LENGTH + idx + 1, inByte); // EEPROM
         // then, increment counters and/or set that we're done
         idx++;
@@ -93,7 +77,6 @@ void RFIDDB::readTags()
     }
   }
   Serial.println("Finished!");
-#endif
 }
 
 bool RFIDDB::validTag(char* tag){
@@ -106,16 +89,12 @@ bool RFIDDB::validTag(char* tag){
 #endif
     ok = true;
     for(int j = 0; j < TAG_LENGTH; j++){
-#ifdef DONT_BUFFER_TAG_IDS
       char buffer;
       buffer = (char) EEPROM.read(i*TAG_LENGTH+j+1);
 #if 0
       Serial.print(buffer);
 #endif
       if(tag[j] != buffer) {
-#else
-      if(tag[j] != tagData[i][j]){
-#endif
         ok = false;
       }
     }
